@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tarea;
-use Illuminate\Http\Request;
+use App\Http\Requests\TareaRequest;
 
 class TareaController extends Controller
 {
@@ -14,7 +14,11 @@ class TareaController extends Controller
      */
     public function index()
     {
-        //
+        // $tareas = Tarea::orderByDesc('id')->get();
+        // $params = [
+        //     'tareas'=> $tareas,
+        // ];
+        return view('tarea.index');
     }
 
     /**
@@ -24,7 +28,7 @@ class TareaController extends Controller
      */
     public function create()
     {
-        //
+        return view('tarea.create');
     }
 
     /**
@@ -33,9 +37,15 @@ class TareaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TareaRequest $request)
     {
-        //
+        $datos = $request->validated();
+        //arreglar checkbox
+        $vcheck = array_key_exists("finalizado", $datos) ? true : false;
+        $datos['finalizado'] = $vcheck;
+
+        $tarea = Tarea::create($datos);
+        return redirect()->route('tarea.index');
     }
 
     /**
@@ -46,7 +56,7 @@ class TareaController extends Controller
      */
     public function show(Tarea $tarea)
     {
-        //
+        return view('tarea.show', ['tarea'=> $tarea]);
     }
 
     /**
@@ -57,7 +67,7 @@ class TareaController extends Controller
      */
     public function edit(Tarea $tarea)
     {
-        //
+        return view('tarea.edit', compact('tarea'));
     }
 
     /**
@@ -67,9 +77,15 @@ class TareaController extends Controller
      * @param  \App\Models\Tarea  $tarea
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Tarea $tarea)
+    public function update(TareaRequest $request, Tarea $tarea)
     {
-        //
+        $datos = $request->validated();
+        //arreglar checkbox
+        $vcheck = array_key_exists("finalizado", $datos) ? true : false;
+        $datos['finalizado'] = $vcheck;
+
+        $tarea->update($datos);
+        return redirect()->route('tarea.index');
     }
 
     /**
@@ -80,6 +96,8 @@ class TareaController extends Controller
      */
     public function destroy(Tarea $tarea)
     {
-        //
+        $tarea->delete();
+        return redirect()->route('tarea.index');
     }
 }
+
