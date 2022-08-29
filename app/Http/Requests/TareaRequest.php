@@ -32,3 +32,4 @@ class TareaRequest extends FormRequest
         ];
     }
 }
+
